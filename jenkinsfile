@@ -1,24 +1,24 @@
-pipeline{
+pipeline {
     agent any
-    environment{
-        path = "/opt/maven/bin:$PATH"
+    environment {
+        PATH = "/opt/maven/bin:$PATH"
     }
-    stages{
-        stage("build"){
-            steps{
+    stages {
+        stage("Build") {
+            steps {
                 sh "mvn clean install"
             }
         }
-        stage("sonarqube analysis"){
-                environment{
-                    scanner_home = tool "sonarqubescanner"
+        stage("SonarQube Analysis") {
+            environment {
+                scannerHome = tool "sonarqubescanner"
+            }
+            steps {
+                withSonarQubeEnv("sonarqubeserver") {
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
-                steps{
-                    withsonarqubeEnv("sonarqubeserver"){
-                        sh "${scannerhome}/bin/sonar-scanner"
-                    }
-                }
+            }
         }
     }
 }
-                
+     
