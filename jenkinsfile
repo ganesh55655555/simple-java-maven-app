@@ -5,13 +5,20 @@ pipeline{
         }
     stages{
         stage('build'){
+            steps{
             sh "mvn clean install"
         }
+        }
         stage('sonarqube analysis'){
+            steps{
             withsonarqybeEnv(sonarqube-server){
                 sh "${scannerhome}/bin/sonar-scanner"
             }
             }
         }
+        }
+        
         
     }
+    
+
