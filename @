@@ -6,12 +6,12 @@ pipeline{
     stages{
         stage('build'){
             steps{
-            sh 'mvn clean install'
+            sh "mvn clean install"
         }
     }
         stage('sonarqube analysis'){
            steps{
-            withSonarQubeEnv(sonarqube-server){
+            withsonarqubeEnv(sonarqube-server){
                 sh "${scannerhome}/bin/sonar-scanner"
             }
           }
