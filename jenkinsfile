@@ -4,10 +4,19 @@ pipeline{
         PATH = "/opt/maven/bin:$PATH"
         
     }
-stages{
-    stage('build'){
+    stages{
+        stage('build'){
+            steps{
+            echo "....build started..."
+            sh "mvn clean install -Dmaven.test.skip=true"
+            echo "...build completed...."
+        }
+    }
+    stage('test'){
         steps{
-            sh "mvn clean install"
+            echo "......test started....."
+            sh "mvn surefire-report:report"
+            echo "...... test completed....."
             
         }
     }
@@ -15,12 +24,15 @@ stages{
        environment{
            scannerhome = tool 'sonarqube-scanner'
        }
-       
+
        steps{
            withSonarQubeEnv ('sonarqube-server'){
                sh "${scannerHome}/bin/sonar-scanner"
-           }
-       }
-       }
+
+        
     }
+    
+}
+}
+}
 }
