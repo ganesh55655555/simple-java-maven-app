@@ -17,7 +17,7 @@ stages{
        }
        
        steps{
-           withSonarQubeEnv ('sonarqube-rserver'){
+           withSonarQubeEnv ('sonarqube-server'){
                sh "${scannerHome}/bin/sonar-scanner"
            }
        }
