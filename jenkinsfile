@@ -1,47 +1,17 @@
-pipeline {
+pipeline{
     agent any
-    environment {
+    environment{
         PATH = "/opt/maven/bin:$PATH"
+        }
+    stages{
+        stage('build'){
+            sh "mvn clean install"
+        }
+        stage('sonarqube analysis'){
+            withsonarqybeEnv(sonarqube-server){
+                sh "${scannerhome}/bin/sonar-scanner"
+            }
+            }
+        }
+        
     }
-    stages {
-        stage('Build') {
-            steps {
-                echo "....build started..."
-                sh "mvn clean install -Dmaven.test.skip=true"
-                echo "...build completed...."
-            }
-        }
-         stage('test'){
-        steps{
-            echo "......test started....."
-            sh "mvn surefire-report:report"
-            echo "...... test completed....."
-
-        }
-    }
-         
-         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'sonarqube-scanner' // Specify the SonarQube scanner name
-            }
-            steps {
-                withSonarQubeEnv('sonarqube-server') { // Corrected name for the SonarQube server
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                script {
-                    // Wait for SonarQube quality gate to pass
-                    timeout(time: 10, unit: 'MINUTES') { // Adjust timeout as needed
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
