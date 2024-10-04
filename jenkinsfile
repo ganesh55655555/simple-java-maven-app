@@ -16,7 +16,7 @@ pipeline {
         stage('test'){
             steps{
                 echo '.....test started......'
-                s 'mvn surefire-report:report'
+                sh 'mvn surefire-report:report'
                 echo '......test completed.....'
             }
         }
